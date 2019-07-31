@@ -1,0 +1,1 @@
+- The reference VM implementation does not appear to compile to .asm, so find a different way to run automated integ tests.
