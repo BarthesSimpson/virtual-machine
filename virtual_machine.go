@@ -10,7 +10,7 @@ import (
 type VirtualMachine struct {
 	inpath  string
 	outpath string
-	encoder Code
+	encoder CodeWriter
 	w       *bufio.Writer
 }
 
@@ -30,5 +30,23 @@ func (vm *VirtualMachine) Convert() {
 	vm.w = bufio.NewWriter(dest)
 
 	infile.Close()
-	log.Println("Not yet implemented")
+	vm.translateInstructions(infile)
+}
+
+func (vm *VirtualMachine) translateInstructions(infile *os.File) {
+	p := NewParser(infile)
+	l := 1
+	for {
+		p.Advance()
+		if !p.HasMoreCommands() {
+			break
+		}
+		vm.processCommand(p, l)
+		l++
+	}
+	vm.w.Flush()
+}
+
+func (vm *VirtualMachine) processCommand(p Parser, l int) {
+
 }
