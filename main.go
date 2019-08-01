@@ -15,7 +15,7 @@ func main() {
 
 	inpath := os.Args[1]
 	fname := strings.Split(inpath, ".")[0]
-	outpath := fmt.Sprintf("%s.hack", fname)
+	outpath := fmt.Sprintf("%s.asm", fname)
 	// This API will change in the next iteration; for now, this is basically just an assembler
 	vm := VirtualMachine{inpath, outpath, Code{}, nil}
 	vm.Convert()
