@@ -2,14 +2,17 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"os"
 )
 
 // Command represents a single assembly command
 type Command struct {
-	ctype  CommandType
-	symbol string
+	ctype     CommandType
+	operation Operation
+	arg1      Memloc
+	arg2      int
 }
 
 // Parser is the main object that processes the input file line by line
@@ -73,6 +76,15 @@ func (p *Parser) Arg2() string {
 }
 
 func (p *Parser) parseLine(line string) (Command, error) {
+	if isArithmeticCommand(line) {
+		op := EnumValFromString(arithmeticCommandStrings, line)
+		if op == -1 {
+			return Command{}, fmt.Errorf("%s is not a valid arithmetic command", line)
+		}
+		return Command{C_ARITHMETIC, op, locNull, 0}, nil
+	}
+	// Next: parse push and pop commands
+	// Then: do the remaining commands
 	return Command{}, nil
 }
 
