@@ -27,4 +27,23 @@ func TestToken(t *testing.T) {
 			g.Assert(isArithmeticCommand("goto")).Equal(false)
 		})
 	})
+	g.Describe("isMemoryAccessCommand", func() {
+		g.It("Correctly identifies memory access commands", func() {
+			g.Assert(isMemoryAccessCommand("push")).Equal(true)
+			g.Assert(isMemoryAccessCommand("pop")).Equal(true)
+			g.Assert(isMemoryAccessCommand("goto")).Equal(true)
+		})
+		g.It("Correctly excludes non-memory access commands", func() {
+			g.Assert(isMemoryAccessCommand("add")).Equal(false)
+			g.Assert(isMemoryAccessCommand("sub")).Equal(false)
+			g.Assert(isMemoryAccessCommand("neg")).Equal(false)
+			g.Assert(isMemoryAccessCommand("mult")).Equal(false)
+			g.Assert(isMemoryAccessCommand("eq")).Equal(false)
+			g.Assert(isMemoryAccessCommand("gt")).Equal(false)
+			g.Assert(isMemoryAccessCommand("lt")).Equal(false)
+			g.Assert(isMemoryAccessCommand("and")).Equal(false)
+			g.Assert(isMemoryAccessCommand("or")).Equal(false)
+			g.Assert(isMemoryAccessCommand("not")).Equal(false)
+		})
+	})
 }

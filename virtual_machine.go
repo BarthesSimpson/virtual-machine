@@ -2,8 +2,10 @@ package main
 
 import (
 	"bufio"
-	"log"
+	"fmt"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // VirtualMachine is the main object that drives the program
@@ -29,16 +31,20 @@ func (vm *VirtualMachine) Convert() {
 
 	vm.w = bufio.NewWriter(dest)
 
-	infile.Close()
+	defer infile.Close()
 	vm.translateInstructions(infile)
 }
 
 func (vm *VirtualMachine) translateInstructions(infile *os.File) {
+
+	log.Printf("Parsing file: %s", vm.inpath)
+
 	p := NewParser(infile)
 	l := 1
 	for {
 		p.Advance()
 		if !p.HasMoreCommands() {
+			log.Print("Finished parsing file")
 			break
 		}
 		vm.processCommand(p, l)
@@ -48,5 +54,5 @@ func (vm *VirtualMachine) translateInstructions(infile *os.File) {
 }
 
 func (vm *VirtualMachine) processCommand(p Parser, l int) {
-
+	fmt.Println(p.currentCommand)
 }

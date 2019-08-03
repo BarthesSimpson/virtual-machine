@@ -56,24 +56,46 @@ func isArithmeticCommand(line string) bool {
 	return false
 }
 
-// Memloc is an integer enum type
-type Memloc int
+// MemoryAccessCommand is an integer enum type
+type MemoryAccessCommand int
+
+// Enum for the possible types of memory access command:
+const (
+	CmdPush MemoryAccessCommand = iota
+	CmdPop
+	CmdGoto
+)
+
+// memoryAccessCommandStrings enables converting an arithmetic command to and from its string representation
+var memoryAccessCommandStrings = []string{"push", "pop", "goto"}
+
+func isMemoryAccessCommand(line string) bool {
+	for _, cmd := range memoryAccessCommandStrings {
+		if strings.HasPrefix(line, cmd) {
+			return true
+		}
+	}
+	return false
+}
+
+// MemLoc is an integer enum type
+type MemLoc int
 
 // Enum for the possible memory segment locations:
 const (
-	locNull Memloc = iota
-	locArgument
-	locLocal
-	locStatic
-	locConstant
-	locThis
-	locThat
-	locPointer
-	locTemp
+	LocNull MemLoc = iota
+	LocArgument
+	LocLocal
+	LocStatic
+	LocConstant
+	LocThis
+	LocThat
+	LocPointer
+	LocTemp
 )
 
-// MemlocStrings enables converting a Memloc to and from its string representation
-var MemlocStrings = []string{"NULL", "argument", "local", "static", "constant", "this", "that", "pointer", "temp"}
+// memLocStrings enables converting a MemLoc to and from its string representation
+var memLocStrings = []string{"NULL", "argument", "local", "static", "constant", "this", "that", "pointer", "temp"}
 
 // EnumValFromString enables converting a string into an enum value
 func EnumValFromString(enumStrings []string, searchVal string) int {
