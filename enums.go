@@ -27,6 +27,12 @@ const (
 // CommandTypeStrings enables converting a CommandType to and from its string representation
 var CommandTypeStrings = []string{"NULL", "ARITHMETIC", "PUSH", "POP", "LABEL", "GOTO", "IF", "FUNCTION", "RETURN", "CALL"}
 
+// IsPrintable determines whether the command is a printable command (a or c type)
+// or a non-printable (comment or pseudo-command)
+func (cmd CommandType) IsPrintable() bool {
+	return 0 < cmd
+}
+
 // ArithmeticCommand is an integer enum type
 type ArithmeticCommand int
 

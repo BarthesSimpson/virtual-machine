@@ -49,7 +49,7 @@ func (p *Parser) Advance() {
 		return
 	}
 	line := p.scanner.Text()
-	log.Printf("Scanning line: %s", line)
+	// log.Printf("Scanning line: %s", line)
 	p.hasMoreCommands = true
 	cmd, err := p.parseLine(line)
 	if err != nil {
@@ -59,15 +59,15 @@ func (p *Parser) Advance() {
 }
 
 // Arg1 returns the first argument of the current command
-func (p *Parser) Arg1() string {
+func (p *Parser) Arg1() MemLoc { //<---- MAYBE THESE MEMLOCS CAN JUST BE A SIMPLE MAP OF LOCS TO START ADDRESSES?
 	if p.currentCommand.ctype == C_RETURN {
 		log.Fatal("Cannot call Arg1 on a RETURN command")
 	}
-	return "Hi buddy"
+	return LocNull
 }
 
 // Arg2 returns the second argument of the current command
-func (p *Parser) Arg2() string {
+func (p *Parser) Arg2() int {
 	var validCommandTypes = []CommandType{C_PUSH, C_POP, C_FUNCTION, C_CALL}
 	var validCommandNames = [4]string{}
 	for i := 0; i < 4; i++ {
@@ -76,7 +76,7 @@ func (p *Parser) Arg2() string {
 	if !matchAny(validCommandTypes, p.currentCommand.ctype) {
 		log.Fatalf("Can only call Arg2 on commands: %v", validCommandNames)
 	}
-	return "Not yet implemented"
+	return 0
 }
 
 func (p *Parser) parseLine(line string) (Command, error) {
@@ -104,11 +104,11 @@ func (p *Parser) parseLine(line string) (Command, error) {
 	if cmd == CmdPush {
 		dest := MemLoc(EnumValFromString(memLocStrings, spl[1]))
 		if dest == -1 {
-			return Command{}, fmt.Errorf("%s contains an invalid push destination: '%s'", line, spl[1])
+			return Command{}, fmt.Errorf("'%s' contains an invalid push destination: '%s'", line, spl[1])
 		}
 		val, err := strconv.Atoi(spl[2])
 		if err != nil {
-			return Command{}, fmt.Errorf("%s contains a value that cannot be pushed: '%s'", line, spl[2])
+			return Command{}, fmt.Errorf("'%s' contains a value that cannot be pushed: '%s'", line, spl[2])
 		}
 		return Command{C_PUSH, CmdPush, dest, val}, nil
 	}
@@ -116,13 +116,15 @@ func (p *Parser) parseLine(line string) (Command, error) {
 	if cmd == CmdPop {
 		src := MemLoc(EnumValFromString(memLocStrings, spl[1]))
 		if src == -1 {
-			return Command{}, fmt.Errorf("%s contains an invalid pop source: '%s'", line, spl[1])
+			return Command{}, fmt.Errorf("'%s' contains an invalid pop source: '%s'", line, spl[1])
 		}
+		// First, handle integer literal destinations
 		dest, err := strconv.Atoi(spl[2])
 		if err != nil {
-			return Command{}, fmt.Errorf("%s contains an invalid push destination: '%s'", line, spl[2])
+			return Command{}, fmt.Errorf("'%s' contains an invalid push destination: '%s'", line, spl[2])
 		}
-		return Command{C_PUSH, CmdPop, src, dest}, nil
+
+		return Command{C_POP, CmdPop, src, dest}, nil
 	}
 
 	//TODO: implement this

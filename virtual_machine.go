@@ -13,6 +13,7 @@ type VirtualMachine struct {
 	inpath  string
 	outpath string
 	encoder CodeWriter
+	m       *Memory
 	w       *bufio.Writer
 }
 
@@ -47,7 +48,10 @@ func (vm *VirtualMachine) translateInstructions(infile *os.File) {
 			log.Print("Finished parsing file")
 			break
 		}
-		vm.processCommand(p, l)
+		ctype := p.CommandType()
+		if ctype.IsPrintable() {
+			vm.processCommand(p, l)
+		}
 		l++
 	}
 	vm.w.Flush()
@@ -55,4 +59,16 @@ func (vm *VirtualMachine) translateInstructions(infile *os.File) {
 
 func (vm *VirtualMachine) processCommand(p Parser, l int) {
 	fmt.Println(p.currentCommand)
+	ctype := p.CommandType()
+	if ctype == C_PUSH || ctype == C_POP {
+		out, err := vm.encoder.WritePushPop(ctype, p.Arg1(), p.Arg2())
+		if err != nil {
+			log.Fatalf("Unable to translate line %d: %s", l, err)
+		}
+		vm.w.WriteString(out)
+	}
+	if ctype == C_ARITHMETIC {
+		// vm.encoder.WriteArithmetic(p.currentCommand)
+
+	}
 }

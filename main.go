@@ -17,6 +17,6 @@ func main() {
 	fname := strings.Split(inpath, ".")[0]
 	outpath := fmt.Sprintf("%s.asm", fname)
 	// This API will change in the next iteration; for now, this is basically just an assembler
-	vm := VirtualMachine{inpath, outpath, CodeWriter{}, nil}
+	vm := VirtualMachine{inpath, outpath, CodeWriter{}, AllocateMemory(), nil}
 	vm.Convert()
 }
