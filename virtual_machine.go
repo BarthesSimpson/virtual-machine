@@ -76,20 +76,20 @@ func (vm *VirtualMachine) translateInstructions(files []*os.File) {
 
 	for _, file := range files {
 		log.Printf("Parsing file: %s", file.Name())
-		// p := NewParser(file)
-		// l := 1
-		// for {
-		// 	p.Advance()
-		// 	if !p.HasMoreCommands() {
-		// 		log.Print("Finished parsing file")
-		// 		break
-		// 	}
-		// 	ctype := p.CommandType()
-		// 	if ctype.IsPrintable() {
-		// 		vm.processCommand(p, l)
-		// 	}
-		// 	l++
-		// }
+		p := NewParser(file)
+		l := 1
+		for {
+			p.Advance()
+			if !p.HasMoreCommands() {
+				log.Print("Finished parsing file")
+				break
+			}
+			ctype := p.CommandType()
+			if ctype.IsPrintable() {
+				vm.processCommand(p, l)
+			}
+			l++
+		}
 	}
 	vm.w.Flush()
 }
@@ -98,14 +98,17 @@ func (vm *VirtualMachine) processCommand(p Parser, l int) {
 	fmt.Println(p.currentCommand)
 	ctype := p.CommandType()
 	if ctype == C_PUSH || ctype == C_POP {
-		out, err := vm.encoder.WritePushPop(ctype, p.Arg1(), p.Arg2())
+		out, err := vm.encoder.WritePushPop(p.currentCommand)
 		if err != nil {
 			log.Fatalf("Unable to translate line %d: %s", l, err)
 		}
 		vm.w.WriteString(out)
 	}
 	if ctype == C_ARITHMETIC {
-		// vm.encoder.WriteArithmetic(p.currentCommand)
-
+		out, err := vm.encoder.WriteArithmetic(p.currentCommand)
+		if err != nil {
+			log.Fatalf("Unable to translate line %d: %s", l, err)
+		}
+		vm.w.WriteString(out)
 	}
 }

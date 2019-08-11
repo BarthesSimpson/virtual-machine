@@ -80,11 +80,11 @@ func (p *Parser) Arg2() int {
 }
 
 func (p *Parser) parseLine(line string) (Command, error) {
-	if strings.HasPrefix(line, COMMENT) || line == "" {
-		return Command{CmdNull, CmdNull, LocNull, 0}, nil
-	}
 
 	line = stripInlineComments(line)
+	if line == "" {
+		return Command{CmdNull, CmdNull, LocNull, 0}, nil
+	}
 
 	if isArithmeticCommand(line) {
 		op := EnumValFromString(arithmeticCommandStrings, line)
@@ -118,7 +118,7 @@ func (p *Parser) parseLine(line string) (Command, error) {
 		if src == -1 {
 			return Command{}, fmt.Errorf("'%s' contains an invalid pop source: '%s'", line, spl[1])
 		}
-		// First, handle integer literal destinations
+
 		dest, err := strconv.Atoi(spl[2])
 		if err != nil {
 			return Command{}, fmt.Errorf("'%s' contains an invalid push destination: '%s'", line, spl[2])
