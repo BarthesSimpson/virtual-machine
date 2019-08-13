@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"testing"
 
@@ -38,7 +37,6 @@ func TestParser(t *testing.T) {
 			if err != nil {
 				t.Errorf("Parser failed to parse line: '%s' because %s", l, err)
 			}
-			fmt.Printf("%#v", cmd)
 			g.Assert(cmd.ctype).Equal(C_POP)
 			g.Assert(cmd.operation).Equal(CmdPop)
 		})

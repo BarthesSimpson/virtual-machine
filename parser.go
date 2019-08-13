@@ -49,7 +49,6 @@ func (p *Parser) Advance() {
 		return
 	}
 	line := p.scanner.Text()
-	// log.Printf("Scanning line: %s", line)
 	p.hasMoreCommands = true
 	cmd, err := p.parseLine(line)
 	if err != nil {
@@ -59,7 +58,7 @@ func (p *Parser) Advance() {
 }
 
 // Arg1 returns the first argument of the current command
-func (p *Parser) Arg1() MemLoc { //<---- MAYBE THESE MEMLOCS CAN JUST BE A SIMPLE MAP OF LOCS TO START ADDRESSES?
+func (p *Parser) Arg1() MemLoc {
 	if p.currentCommand.ctype == C_RETURN {
 		log.Fatal("Cannot call Arg1 on a RETURN command")
 	}
@@ -87,6 +86,7 @@ func (p *Parser) parseLine(line string) (Command, error) {
 	}
 
 	if isArithmeticCommand(line) {
+		// fmt.Printf("The line is: %s\n", line)
 		op := EnumValFromString(arithmeticCommandStrings, line)
 		if op == -1 {
 			return Command{}, fmt.Errorf("%s is not a valid arithmetic command", line)

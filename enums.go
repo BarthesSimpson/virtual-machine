@@ -1,11 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 )
 
 // Operation refers to any type of command
-type Operation = interface{}
+type Operation interface{}
 
 // CommandType is an integer enum type
 type CommandType int
@@ -51,7 +52,7 @@ const (
 )
 
 // arithmeticCommandStrings enables converting an arithmetic command to and from its string representation
-var arithmeticCommandStrings = []string{ADD, SUB, NEG, MULT, EQ, GT, LT, AND, OR, NOT}
+var arithmeticCommandStrings = []string{"add", "sub", "neg", "mult", "eq", "gt", "lt", "and", "or", "not"}
 
 func isArithmeticCommand(line string) bool {
 	for _, cmd := range arithmeticCommandStrings {
@@ -102,6 +103,26 @@ const (
 
 // memLocStrings enables converting a MemLoc to and from its string representation
 var memLocStrings = []string{"NULL", "argument", "local", "static", "constant", "this", "that", "pointer", "temp"}
+
+var memBase = map[MemLoc]int{LocStatic: 0x10, LocPointer: 0x3, LocTemp: 0x6}
+
+// BaseAddr fetches the starting address of a memory segment if it exists
+func BaseAddr(m MemLoc) (int, error) {
+	if val, ok := memBase[m]; ok {
+		return val, nil
+	}
+	return 0, fmt.Errorf("%d does not have a base physical memory address", m)
+}
+
+var memAsm = map[MemLoc]string{LocArgument: "ARG", LocLocal: "LOC", LocThis: "THIS", LocThat: "THAT"}
+
+// SegToAsm fetches the alias of a memory segment if it exists
+func SegToAsm(m MemLoc) (string, error) {
+	if val, ok := memAsm[m]; ok {
+		return val, nil
+	}
+	return "", fmt.Errorf("%d does not have a memory segment alias", m)
+}
 
 // EnumValFromString enables converting a string into an enum value
 func EnumValFromString(enumStrings []string, searchVal string) int {

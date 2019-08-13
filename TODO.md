@@ -1,2 +1,3 @@
-- Handle directories as well as just single files
+- Update the unit tests for codewriter writeArithmetic now that I changed the mechanism for converting between text and integer representations.
+- Add tests for codewriter writePushPop. It compiles, but probably has errors.
 - The reference VM implementation does not appear to compile to .asm, so find a different way to run automated integ tests.
