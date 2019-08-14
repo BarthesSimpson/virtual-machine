@@ -91,7 +91,7 @@ func (p *Parser) parseLine(line string) (Command, error) {
 		if op == -1 {
 			return Command{}, fmt.Errorf("%s is not a valid arithmetic command", line)
 		}
-		return Command{C_ARITHMETIC, op, LocNull, 0}, nil
+		return Command{C_ARITHMETIC, Operation(op), LocNull, 0}, nil
 	}
 
 	if !isMemoryAccessCommand(line) {
