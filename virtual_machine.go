@@ -102,13 +102,20 @@ func (vm *VirtualMachine) processCommand(p Parser, l int) {
 		if err != nil {
 			log.Fatalf("Unable to translate line %d: %s", l, err)
 		}
-		vm.w.WriteString(out)
+		vm.commitLine(out, l)
 	}
 	if ctype == C_ARITHMETIC {
 		out, err := vm.encoder.WriteArithmetic(p.currentCommand)
 		if err != nil {
 			log.Fatalf("Unable to translate line %d: %s", l, err)
 		}
-		vm.w.WriteString(out)
+		vm.commitLine(out, l)
+	}
+}
+
+func (vm *VirtualMachine) commitLine(str string, l int) {
+	_, err := vm.w.WriteString(str)
+	if err != nil {
+		log.Fatalf("Unable to write line %d: %s", l, err)
 	}
 }

@@ -115,7 +115,7 @@ func TestCodeWriter(t *testing.T) {
 		cw := CodeWriter{}
 		g.It("Correctly writes a C_PUSH constant command", func() {
 			in := Command{C_PUSH, CmdPush, LocConstant, 99}
-			expected := "@99D=A\n@SP\nA=M\nM=D\n@SP\nM=M+1"
+			expected := "@99\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
 			out, err := cw.WritePushPop(in)
 			g.Assert(err == nil).IsTrue(fmt.Sprintf("Expected no error but received %v", err))
 			g.Assert(expected).Equal(out)
@@ -124,7 +124,7 @@ func TestCodeWriter(t *testing.T) {
 		// Using this test as a proxy for all non-constant push commands; YOLO
 		g.It("Correctly writes a C_PUSH THIS command", func() {
 			in := Command{C_PUSH, CmdPush, LocThis, 2}
-			expected := "@THIS\nD=M\n@2\nA=D+A\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1"
+			expected := "@THIS\nD=M\n@2\nA=D+A\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
 			out, err := cw.WritePushPop(in)
 			g.Assert(err == nil).IsTrue(fmt.Sprintf("Expected no error but received %v", err))
 			g.Assert(expected).Equal(out)

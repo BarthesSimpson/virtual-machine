@@ -115,9 +115,9 @@ func (cw *CodeWriter) resolveAddress(seg MemLoc, idx int) (string, error) {
 
 	switch seg {
 	case LocConstant:
-		return fmt.Sprintf("@%d", idx), nil // constants are easy
+		return fmt.Sprintf("@%d\n", idx), nil // constants are easy
 	case LocStatic:
-		return fmt.Sprintf("@STATIC%d", idx), nil // write a new static variable
+		return fmt.Sprintf("@STATIC%d\n", idx), nil // write a new static variable
 	case LocPointer, LocTemp:
 		base, err := BaseAddr(seg) // resolve the base address
 		if err != nil {
@@ -147,9 +147,9 @@ func (cw *CodeWriter) popStackToD() string {
 }
 
 func (cw *CodeWriter) pushDtoStack() string {
-	sp := "@SP\n"   // get the stack pointer
-	addr := "A=M\n" // load its address into A register
-	load := "M=D\n" // load the value of D register into that address
-	inc := "M=M+1"  // increment the stack pointer
+	sp := "@SP\n"    // get the stack pointer
+	addr := "A=M\n"  // load its address into A register
+	load := "M=D\n"  // load the value of D register into that address
+	inc := "M=M+1\n" // increment the stack pointer
 	return sp + addr + load + sp + inc
 }
