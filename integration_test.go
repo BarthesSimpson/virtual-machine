@@ -14,7 +14,7 @@ func TestIntegration(t *testing.T) {
 	}
 	g := Goblin(t)
 	g.Describe("Integration tests for stack arithmetic", func() {
-		g.Xit("Adds two constants", func() {
+		g.It("Adds two constants", func() {
 			CompareFiles("test/SimpleAdd.vm", "test/SimpleAdd.asm", "test/SimpleAddExpected.asm", t)
 		})
 		g.Xit("Executes arithmetic and logical operations on the stack", func() {
@@ -35,8 +35,8 @@ func TestIntegration(t *testing.T) {
 }
 
 func CompareFiles(infile string, outfile string, expected string, t *testing.T) {
-	// vm := VirtualMachine{infile, outfile, Code{}} // This is roughly the interface that will be implemented
-	// vm.Convert()
+	vm := VirtualMachine{infile, outfile, CodeWriter{}, AllocateMemory(), nil}
+	vm.Convert()
 
 	out, err := os.Open(outfile)
 	if err != nil {
