@@ -104,7 +104,7 @@ const (
 // memLocStrings enables converting a MemLoc to and from its string representation
 var memLocStrings = []string{"NULL", "argument", "local", "static", "constant", "this", "that", "pointer", "temp"}
 
-var memBase = map[MemLoc]int{LocStatic: 0x10, LocPointer: 0x3, LocTemp: 0x6}
+var memBase = map[MemLoc]int{LocStatic: 0x10, LocPointer: 0x3, LocTemp: 0x5}
 
 // BaseAddr fetches the starting address of a memory segment if it exists
 func BaseAddr(m MemLoc) (int, error) {
@@ -114,7 +114,7 @@ func BaseAddr(m MemLoc) (int, error) {
 	return 0, fmt.Errorf("%d does not have a base physical memory address", m)
 }
 
-var memAsm = map[MemLoc]string{LocArgument: "ARG", LocLocal: "LOC", LocThis: "THIS", LocThat: "THAT"}
+var memAsm = map[MemLoc]string{LocArgument: "ARG", LocLocal: "LOC", LocThis: "THIS", LocThat: "THAT", LocTemp: "TEMP"}
 
 // SegToAsm fetches the alias of a memory segment if it exists
 func SegToAsm(m MemLoc) (string, error) {

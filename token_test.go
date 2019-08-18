@@ -9,7 +9,7 @@ import (
 func TestToken(t *testing.T) {
 	g := Goblin(t)
 	g.Describe("isArithmeticCommand", func() {
-		g.It("Correctly identifies arithmetic commands", func() {
+		g.It("correctly identifies arithmetic commands", func() {
 			g.Assert(isArithmeticCommand("add")).Equal(true)
 			g.Assert(isArithmeticCommand("sub")).Equal(true)
 			g.Assert(isArithmeticCommand("neg")).Equal(true)
@@ -21,19 +21,19 @@ func TestToken(t *testing.T) {
 			g.Assert(isArithmeticCommand("or")).Equal(true)
 			g.Assert(isArithmeticCommand("not")).Equal(true)
 		})
-		g.It("Correctly excludes non-arithmetic commands", func() {
+		g.It("correctly excludes non-arithmetic commands", func() {
 			g.Assert(isArithmeticCommand("push")).Equal(false)
 			g.Assert(isArithmeticCommand("pop")).Equal(false)
 			g.Assert(isArithmeticCommand("goto")).Equal(false)
 		})
 	})
 	g.Describe("isMemoryAccessCommand", func() {
-		g.It("Correctly identifies memory access commands", func() {
+		g.It("correctly identifies memory access commands", func() {
 			g.Assert(isMemoryAccessCommand("push")).Equal(true)
 			g.Assert(isMemoryAccessCommand("pop")).Equal(true)
 			g.Assert(isMemoryAccessCommand("goto")).Equal(true)
 		})
-		g.It("Correctly excludes non-memory access commands", func() {
+		g.It("correctly excludes non-memory access commands", func() {
 			g.Assert(isMemoryAccessCommand("add")).Equal(false)
 			g.Assert(isMemoryAccessCommand("sub")).Equal(false)
 			g.Assert(isMemoryAccessCommand("neg")).Equal(false)

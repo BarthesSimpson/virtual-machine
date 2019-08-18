@@ -11,7 +11,7 @@ type stackAccessor func(*Memory) *Stack
 
 func runStackTest(g *G, name string, getStack stackAccessor, start int, size int) {
 	g.Describe(fmt.Sprintf("%s tests", name), func() {
-		g.It(fmt.Sprintf("Pushes and pops from the %s", name), func() {
+		g.It(fmt.Sprintf("pushes and pops from the %s", name), func() {
 			m := AllocateMemory()
 			s := getStack(m)
 			i, err := s.Push()
@@ -21,13 +21,13 @@ func runStackTest(g *G, name string, getStack stackAccessor, start int, size int
 			g.Assert(i).Equal(start)
 			g.Assert(err).Equal(nil)
 		})
-		g.It(fmt.Sprintf("Errors when popping from an empty %s", name), func() {
+		g.It(fmt.Sprintf("errors when popping from an empty %s", name), func() {
 			m := AllocateMemory()
 			s := getStack(m)
 			_, err := s.Pop()
 			g.Assert(err != nil).IsTrue()
 		})
-		g.It("Errors when pushing to a full stack pointer", func() {
+		g.It("errors when pushing to a full stack pointer", func() {
 			m := AllocateMemory()
 			s := getStack(m)
 			for i := 0; i < size; i++ {

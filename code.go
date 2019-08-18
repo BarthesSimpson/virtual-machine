@@ -44,10 +44,10 @@ func (cw *CodeWriter) WriteArithmetic(cmd Command) (string, error) {
 		return prefix + cw.writeJump("JGE"), nil
 
 	case C_AND:
-		return prefix + "@M=M&D\n", nil
+		return prefix + "M=M&D\n", nil
 
 	case C_OR:
-		return prefix + "@M=M|D\n", nil
+		return prefix + "M=M|D\n", nil
 
 	// These operations are not prefixed by popping from the stack
 	case C_NEG:
@@ -56,7 +56,7 @@ func (cw *CodeWriter) WriteArithmetic(cmd Command) (string, error) {
 		// Load the address of the top of the stack into the A register
 		// Replace the value at that address with the value of D register (0) minus the original value
 		// The result is that the value at the top of the stack has had its cardinality inverted
-		return "D=0\n@SP\nA=M-1\nM=D-M", nil
+		return "D=0\n@SP\nA=M-1\nM=D-M\n", nil
 
 	case C_NOT:
 		// Load the stack pointer
@@ -104,46 +104,43 @@ func (cw *CodeWriter) WritePushPop(cmd Command) (string, error) {
 		commit := "M=D\n"       // commit the contents of D into the destination address
 		return addr + prep + tmp + write + pop + tmp + load + commit, nil
 	}
+
 	push := cw.pushDtoStack() // load the value of D into the top of the stack
 	if seg == LocConstant {
 		return addr + "D=A\n" + push, nil // resolve the source constant and load it into D, then push from D onto the stack
 	}
-	return addr + "D=M\n" + push, nil // resolve the source address and load the value stored there into D, then push from D onto the stack
+	return addr + "D=M\n" + push, nil
 }
 
 func (cw *CodeWriter) resolveAddress(seg MemLoc, idx int) (string, error) {
-
 	switch seg {
 	case LocConstant:
 		return fmt.Sprintf("@%d\n", idx), nil // constants are easy
-	case LocStatic:
-		return fmt.Sprintf("@STATIC%d\n", idx), nil // write a new static variable
-	case LocPointer, LocTemp:
+	case LocStatic, LocPointer:
 		base, err := BaseAddr(seg) // resolve the base address
 		if err != nil {
 			return "", fmt.Errorf("could not resolve address: %s", err)
 		}
-		return fmt.Sprintf("@R%d", base+idx), nil // load the base plus the offset
-	case LocLocal, LocArgument, LocThis, LocThat:
-		addr, err := SegToAsm(seg) // resolve the base address
+		return fmt.Sprintf("@%d\n", base+idx), nil // load the base plus the offset
+	case LocLocal, LocArgument, LocThis, LocThat, LocTemp:
+		addr, err := SegToAsm(seg) // resolve the base address as a symbol
 		if err != nil {
 			return "", fmt.Errorf("could not resolve address: %s", err)
 		}
-		load := "D=M\n"                                            // load it into D
-		cons := fmt.Sprintf("@%d\n", idx)                          // get the offset
-		res := "A=D+A\n"                                           // load the base + offset into A
-		return fmt.Sprintf("@%s\n", addr) + load + cons + res, nil // Write the whole instruction
+		load := "D=M\n"                                           // load it into D
+		ofs := fmt.Sprintf("@%d\n", idx)                          // get the offset
+		res := "A=D+A\n"                                          // load the base + offset into A
+		return fmt.Sprintf("@%s\n", addr) + load + ofs + res, nil // Write the whole instruction
 	}
 
 	return "", fmt.Errorf("could not parse memory location %d + %d", seg, idx)
 }
 
 func (cw *CodeWriter) popStackToD() string {
-	sp := "@SP\n"    // get the stack pointer
-	top := "M=M-1\n" // move it back one place
-	addr := "A=M\n"  // load the address into A register
-	dest := "D=M\n"  // load the content of that address into D register
-	return sp + top + addr + dest
+	sp := "@SP\n"     // get the stack pointer
+	top := "AM=M-1\n" // move it back one place
+	dest := "D=M\n"   // load the content of that address into D register
+	return sp + top + dest
 }
 
 func (cw *CodeWriter) pushDtoStack() string {
