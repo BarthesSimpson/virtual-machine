@@ -114,7 +114,7 @@ func BaseAddr(m MemLoc) (int, error) {
 	return 0, fmt.Errorf("%d does not have a base physical memory address", m)
 }
 
-var memAsm = map[MemLoc]string{LocArgument: "ARG", LocLocal: "LOC", LocThis: "THIS", LocThat: "THAT", LocTemp: "TEMP"}
+var memAsm = map[MemLoc]string{LocArgument: "ARG", LocLocal: "LCL", LocThis: "THIS", LocThat: "THAT", LocTemp: "TEMP"}
 
 // SegToAsm fetches the alias of a memory segment if it exists
 func SegToAsm(m MemLoc) (string, error) {

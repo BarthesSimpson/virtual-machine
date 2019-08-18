@@ -133,7 +133,7 @@ func TestCodeWriter(t *testing.T) {
 		// And this one will have to do for all C_POP commands since I'm not writing any more of these by hand
 		g.It("correctly writes a C_POP local command", func() {
 			in := Command{C_POP, CmdPop, LocLocal, 2}
-			expected := "@LOC\nD=M\n@2\nA=D+A\nD=A\n@R13\nM=D\n@SP\nAM=M-1\nD=M\n@R13\nA=M\nM=D\n"
+			expected := "@LCL\nD=M\n@2\nA=D+A\nD=A\n@R13\nM=D\n@SP\nAM=M-1\nD=M\n@R13\nA=M\nM=D\n"
 			out, err := cw.WritePushPop(in)
 			g.Assert(err == nil).IsTrue(fmt.Sprintf("Expected no error but received %v", err))
 			g.Assert(expected).Equal(out)

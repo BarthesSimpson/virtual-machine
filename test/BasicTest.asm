@@ -5,7 +5,7 @@ A=M
 M=D
 @SP
 M=M+1
-@LOC
+@LCL
 D=M
 @0
 A=D+A
@@ -138,7 +138,7 @@ D=M
 @R13
 A=M
 M=D
-@LOC
+@LCL
 D=M
 @0
 A=D+A
